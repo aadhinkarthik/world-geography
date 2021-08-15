@@ -8,7 +8,6 @@ function HomePage() {
     useEffect(() => {
         const getCountriesInfo = async () => {
             const allData = await fetchCountriesInfo();
-            console.log(allData.filter((d) => d.alpha2Code === 'US'));
             setCountriesInfo(
                 allData.map((data) => {
                     return {
