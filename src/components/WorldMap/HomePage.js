@@ -1,15 +1,54 @@
 import React from 'react';
 import { WorldMap } from 'react-svg-worldmap';
+import { useState, useEffect } from 'react';
 
-const data = [
-    { country: 'cn', value: 1389618778 }, // china
-    { country: 'in', value: 1311559204 } // india
-];
+function HomePage() {
+    const [countriesInfo, setCountriesInfo] = useState([]);
 
-const HomePage = () => {
+    useEffect(() => {
+        const getCountriesInfo = async () => {
+            const allData = await fetchCountriesInfo();
+            console.log(allData.filter((d) => d.alpha2Code === 'US'));
+            setCountriesInfo(
+                allData.map((data) => {
+                    return {
+                        country: data.alpha2Code,
+                        value: data.population,
+                        name: data.name,
+                        flag: data.flag,
+                        capital: data.capital,
+                        region: data.region,
+                        languages: data.languages,
+                        callingCodes: data.callingCodes
+                    };
+                })
+            );
+        };
+
+        getCountriesInfo();
+    }, []);
+
+    const fetchCountriesInfo = async () => {
+        const res = await fetch('https://restcountries.eu/rest/v2/all');
+        const data = await res.json();
+
+        return data;
+    };
+
+    const localizationCallback = (countryName, isoCode, value) => {
+        let info = countriesInfo.find((d) => d.country === isoCode);
+        return `${info?.country}: ${info?.name}, ${info?.capital}, ${info?.region}, ${info?.value}`;
+    };
+
     return (
-        <WorldMap color="green" title="This is My Map" size="xl" data={data} />
+        <WorldMap
+            color="green"
+            title="This is My Map"
+            size="xl"
+            data={countriesInfo}
+            tooltipTextFunction={localizationCallback}
+        />
     );
-};
+}
 
 export default HomePage;

@@ -3,7 +3,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import About from './components/About';
 import HomePage from './components/WorldMap/HomePage';
-import { BrowserRouter, Redirect, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 
 function App() {
     return (
