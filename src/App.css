@@ -1,0 +1,16 @@
+.App {
+    text-align: center;
+}
+
+.App-header {
+    margin: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: top center;
+    font-size: calc(0.7rem + 2vmin);
+}
+
+.App-link {
+    color: #61dafb;
+}
