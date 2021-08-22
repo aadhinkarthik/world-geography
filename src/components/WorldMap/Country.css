@@ -1,0 +1,59 @@
+.container {
+    display: flex;
+    color: #282c34;
+}
+
+.image {
+    background: white;
+    flex-basis: 50%;
+    height: 500px;
+    margin: 1px;
+}
+
+.content {
+    background: white;
+    flex-basis: 50%;
+    height: 500px;
+    margin: 1px;
+}
+
+.scroll {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.country-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-control {
+    margin: 20px 0;
+    display: flex;
+}
+
+.form-control label {
+    display: block;
+    width: 40%;
+    text-align: right;
+    margin-top: 0.1rem;
+}
+
+.form-control input {
+    /* width: 60%; */
+    width: max-content;
+    margin: 5px;
+    padding: 3px 7px;
+    font-size: 17px;
+}
+
+.add-form {
+    margin-bottom: 40px;
+}
+
+.input-hidden-disabled {
+    background-color: inherit;
+    border: inherit;
+}
