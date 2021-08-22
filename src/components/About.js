@@ -3,7 +3,6 @@ import Button from './Utilities/Button';
 
 const About = () => {
     const history = useHistory();
-
     return (
         <div>
             <h2>Assignment</h2>
@@ -16,6 +15,7 @@ const About = () => {
             <br />
             <Button
                 text="Previous"
+                color="orange"
                 onClick={() => {
                     history.goBack();
                 }}
