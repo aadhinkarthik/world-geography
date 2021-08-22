@@ -1,21 +1,47 @@
 import React from 'react';
 import { WorldMap } from 'react-svg-worldmap';
 import { useState, useEffect } from 'react';
+import { useRouteMatch, useHistory, withRouter } from 'react-router-dom';
 
 function HomePage() {
     const [countriesInfo, setCountriesInfo] = useState([]);
+    const { path } = useRouteMatch();
+    const history = useHistory();
+    const localDb = 'http://localhost:5555';
 
     useEffect(() => {
         const getCountriesInfo = async () => {
-            const allData = await fetchCountriesInfo();
+            // Look into local db
+
+            let allCountries = [];
+            try {
+                const userCountries = await fetchDataFromUrl(
+                    `${localDb}/countries`
+                );
+                console.log(`Fetched countries from Local server`);
+                // console.log(userCountries[0]);
+
+                // Fetch from external api if not found
+                allCountries =
+                    Object.keys(userCountries).length === 0
+                        ? await getExternalCountries()
+                        : userCountries;
+            } catch (error) {
+                console.log(`Couldn't fetch data from Local server`);
+                allCountries = await getExternalCountries();
+            }
+
             setCountriesInfo(
-                allData.map((data) => {
+                allCountries.map((data) => {
                     return {
+                        // Tightly coupled with WorldMap
                         country: data.alpha2Code,
                         value: data.population,
+
+                        id: data.id,
                         name: data.name,
-                        flag: data.flag,
                         capital: data.capital,
+                        flag: data.flag,
                         region: data.region,
                         languages: data.languages,
                         callingCodes: data.callingCodes
@@ -24,14 +50,19 @@ function HomePage() {
             );
         };
 
+        const getExternalCountries = async () => {
+            console.log(`Fetching countries from External API`);
+            return await fetchDataFromUrl(
+                'https://restcountries.eu/rest/v2/all'
+            );
+        };
+
         getCountriesInfo();
     }, []);
 
-    const fetchCountriesInfo = async () => {
-        const res = await fetch('https://restcountries.eu/rest/v2/all');
-        const data = await res.json();
-
-        return data;
+    const fetchDataFromUrl = async (url) => {
+        const res = await fetch(url);
+        return await res.json();
     };
 
     const localizationCallback = (countryName, isoCode, value) => {
@@ -39,15 +70,23 @@ function HomePage() {
         return `${info?.country}: ${info?.name}, ${info?.capital}, ${info?.region}, ${info?.value}`;
     };
 
+    const onClickCountry = (event, countryName, isoCode, value) => {
+        history.push({
+            pathname: `${path}/country`,
+            state: countriesInfo.find((info) => info.country === isoCode)
+        });
+    };
+
     return (
         <WorldMap
             color="green"
-            title="This is My Map"
+            title="Countries in the World"
             size="xl"
             data={countriesInfo}
             tooltipTextFunction={localizationCallback}
+            onClickFunction={onClickCountry}
         />
     );
 }
 
-export default HomePage;
+export default withRouter(HomePage);
