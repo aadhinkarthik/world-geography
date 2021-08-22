@@ -2,12 +2,12 @@ import React from 'react';
 import { WorldMap } from 'react-svg-worldmap';
 import { useState, useEffect } from 'react';
 import { useRouteMatch, useHistory, withRouter } from 'react-router-dom';
+import { BASE_URL, EXTERNAL_URL } from '../../config/Constants';
 
 function HomePage() {
-    const [countriesInfo, setCountriesInfo] = useState([]);
-    const { path } = useRouteMatch();
     const history = useHistory();
-    const localDb = 'http://localhost:5555';
+    const { path } = useRouteMatch();
+    const [countriesInfo, setCountriesInfo] = useState([]);
 
     useEffect(() => {
         const getCountriesInfo = async () => {
@@ -16,7 +16,7 @@ function HomePage() {
             let allCountries = [];
             try {
                 const userCountries = await fetchDataFromUrl(
-                    `${localDb}/countries`
+                    `${BASE_URL}/countries`
                 );
                 console.log(`Fetched countries from Local server`);
                 // console.log(userCountries[0]);
@@ -52,9 +52,7 @@ function HomePage() {
 
         const getExternalCountries = async () => {
             console.log(`Fetching countries from External API`);
-            return await fetchDataFromUrl(
-                'https://restcountries.eu/rest/v2/all'
-            );
+            return await fetchDataFromUrl(`${EXTERNAL_URL}`);
         };
 
         getCountriesInfo();

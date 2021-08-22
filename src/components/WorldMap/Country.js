@@ -1,17 +1,21 @@
 import { useState, useEffect } from 'react';
 import Gallery from 'react-photo-gallery';
+import { useHistory } from 'react-router-dom';
 
 import './Country.css';
-import Input from './Input';
+import Input from '../Utilities/Input';
 import Button from '../Utilities/Button';
+import { BASE_URL } from '../../config/Constants';
 
 const Country = (props) => {
-    const [countryInfo, setCountryInfo] = useState(props.location.state || {});
-    const [contentEditable, isContentEditable] = useState(false);
+    const history = useHistory();
     const [photos, setPhotos] = useState([]);
+    const [contentEditable, isContentEditable] = useState(false);
+    const [countryInfo, setCountryInfo] = useState(props.location.state || {});
 
     useEffect(() => {
         isContentEditable(false);
+        //TODO: Add photos based on Country name from Google API
         setPhotos([...photos, constructPhotoGrid(countryInfo.flag)]);
     }, []);
 
@@ -29,27 +33,21 @@ const Country = (props) => {
 
         // TODO: Validation
         isContentEditable(false);
-        console.log(countryInfo);
-        updateCountryInfo(countryInfo);
+        updateCountryInfo(countryInfo).then(() => history.push('/'));
     };
 
     const updateCountryInfo = async (countryInfo) => {
-        console.log(JSON.stringify(countryInfo));
         console.log(
             `Deleting country information by country code: ${countryInfo.country}`
         );
 
         // Delete country information before inserting
-        const success = await fetch(
-            `http://localhost:5555/countries/${countryInfo.id}`,
-            {
-                method: 'DELETE'
-            }
-        );
-        console.log(success);
+        await fetch(`${BASE_URL}/countries/${countryInfo.id}`, {
+            method: 'DELETE'
+        });
 
         // Insert updated country information
-        await fetch('http://localhost:5555/countries', {
+        await fetch(`${BASE_URL}/countries`, {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json'
@@ -102,6 +100,9 @@ const Country = (props) => {
                     <div className="form-control">
                         <label>Code: </label>
                         <Input
+                            className={`${
+                                contentEditable ? '' : 'input-hidden-disabled'
+                            }`}
                             type="text"
                             name="country"
                             value={countryInfo.country}
@@ -112,6 +113,9 @@ const Country = (props) => {
                     <div className="form-control">
                         <label>Population: </label>
                         <Input
+                            className={`${
+                                contentEditable ? '' : 'input-hidden-disabled'
+                            }`}
                             type="number"
                             name="value"
                             value={countryInfo.value}
@@ -122,6 +126,9 @@ const Country = (props) => {
                     <div className="form-control">
                         <label>Name: </label>
                         <Input
+                            className={`${
+                                contentEditable ? '' : 'input-hidden-disabled'
+                            }`}
                             type="text"
                             name="name"
                             value={countryInfo.name}
@@ -132,6 +139,9 @@ const Country = (props) => {
                     <div className="form-control">
                         <label>Capital: </label>
                         <Input
+                            className={`${
+                                contentEditable ? '' : 'input-hidden-disabled'
+                            }`}
                             type="text"
                             name="capital"
                             value={countryInfo.capital}
@@ -142,6 +152,9 @@ const Country = (props) => {
                     <div className="form-control">
                         <label>Region: </label>
                         <Input
+                            className={`${
+                                contentEditable ? '' : 'input-hidden-disabled'
+                            }`}
                             type="text"
                             name="region"
                             value={countryInfo.region}

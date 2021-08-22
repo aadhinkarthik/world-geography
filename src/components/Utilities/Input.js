@@ -1,7 +1,7 @@
-const Input = ({ type, name, value, disabled, onChange }) => {
+const Input = ({ className, type, name, value, disabled, onChange }) => {
     return (
         <input
-            className={`${disabled ? 'input-hidden-disabled' : ''}`}
+            className={className}
             type={type}
             name={name}
             value={value}
