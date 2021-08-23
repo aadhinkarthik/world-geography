@@ -8,17 +8,25 @@ import Button from '../Utilities/Button';
 import { BASE_URL } from '../../config/Constants';
 
 const Country = (props) => {
-    const history = useHistory();
-    const [photos, setPhotos] = useState([]);
-    const [contentEditable, isContentEditable] = useState(false);
     const [countryInfo, setCountryInfo] = useState(props.location.state || {});
+    const constructPhotoGrid = (url) => {
+        return {
+            src: url,
+            width: 4,
+            height: 1
+        };
+    };
+    const [photos, setPhotos] = useState([
+        //TODO: Add photos based on Country name from Google API
+        constructPhotoGrid(countryInfo.flag)
+    ]);
 
+    const [contentEditable, isContentEditable] = useState(false);
     useEffect(() => {
         isContentEditable(false);
-        //TODO: Add photos based on Country name from Google API
-        setPhotos([...photos, constructPhotoGrid(countryInfo.flag)]);
     }, []);
 
+    const history = useHistory();
     const myChangeHandler = (event) => {
         let fieldName = event.target.name;
         let fieldValue = event.target.value;
@@ -55,14 +63,6 @@ const Country = (props) => {
             body: JSON.stringify(constructCountriesData(countryInfo))
         });
         console.log('Updated Country Information');
-    };
-
-    const constructPhotoGrid = (url) => {
-        return {
-            src: url,
-            width: 4,
-            height: 1
-        };
     };
 
     const constructCountriesData = (data) => {
