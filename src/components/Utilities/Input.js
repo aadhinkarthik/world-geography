@@ -6,7 +6,7 @@ const Input = ({ className, type, name, value, disabled, onChange }) => {
             name={name}
             value={value}
             disabled={disabled}
-            onChange={(e) => onChange(e)}
+            onChange={(e) => onChange(e.target)}
         />
     );
 };

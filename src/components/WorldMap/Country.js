@@ -8,7 +8,8 @@ import Button from '../Utilities/Button';
 import { BASE_URL } from '../../config/Constants';
 
 const Country = (props) => {
-    const [countryInfo, setCountryInfo] = useState(props.location.state || {});
+    const history = useHistory();
+
     const constructPhotoGrid = (url) => {
         return {
             src: url,
@@ -16,24 +17,41 @@ const Country = (props) => {
             height: 1
         };
     };
-    const [photos, setPhotos] = useState([
-        //TODO: Add photos based on Country name from Google API
-        constructPhotoGrid(countryInfo.flag)
-    ]);
-
+    // Set default States
+    const [countryInfo, setCountryInfo] = useState(props.location.state || {});
+    const photos = [constructPhotoGrid(countryInfo.flag)];
     const [contentEditable, isContentEditable] = useState(false);
+
     useEffect(() => {
         isContentEditable(false);
     }, []);
 
-    const history = useHistory();
-    const myChangeHandler = (event) => {
-        let fieldName = event.target.name;
-        let fieldValue = event.target.value;
+    const onChangeHandler = (target) => {
+        const { fieldName, fieldValue } = target;
         setCountryInfo({
             ...countryInfo,
             [fieldName]: fieldValue
         });
+    };
+
+    const arrayChangeHandler = (index, target) => {
+        const values = { ...countryInfo };
+        const { name, value } = target;
+        switch (true) {
+            case isSubStringExists(name, 'callingcode'):
+                values[name][index] = value;
+                break;
+            case isSubStringExists(name, 'language'):
+                values[name][index].name = value;
+                break;
+            default:
+                break;
+        }
+        setCountryInfo(values);
+    };
+
+    const isSubStringExists = (string, subString) => {
+        return string.toLowerCase().includes(subString);
     };
 
     const onSubmit = (e) => {
@@ -107,7 +125,7 @@ const Country = (props) => {
                             name="country"
                             value={countryInfo.country}
                             disabled={true}
-                            onChange={myChangeHandler}
+                            onChange={onChangeHandler}
                         />
                     </div>
                     <div className="form-control">
@@ -120,7 +138,7 @@ const Country = (props) => {
                             name="value"
                             value={countryInfo.value}
                             disabled={!contentEditable}
-                            onChange={myChangeHandler}
+                            onChange={onChangeHandler}
                         />
                     </div>
                     <div className="form-control">
@@ -133,7 +151,7 @@ const Country = (props) => {
                             name="name"
                             value={countryInfo.name}
                             disabled={!contentEditable}
-                            onChange={myChangeHandler}
+                            onChange={onChangeHandler}
                         />
                     </div>
                     <div className="form-control">
@@ -146,7 +164,7 @@ const Country = (props) => {
                             name="capital"
                             value={countryInfo.capital}
                             disabled={!contentEditable}
-                            onChange={myChangeHandler}
+                            onChange={onChangeHandler}
                         />
                     </div>
                     <div className="form-control">
@@ -159,7 +177,7 @@ const Country = (props) => {
                             name="region"
                             value={countryInfo.region}
                             disabled={!contentEditable}
-                            onChange={myChangeHandler}
+                            onChange={onChangeHandler}
                         />
                     </div>
                     <div className="form-control">
@@ -173,12 +191,14 @@ const Country = (props) => {
                                                 ? ''
                                                 : 'input-hidden-disabled'
                                         }`}
-                                        key={`${id}_${data.name}`}
+                                        key={`languages_${id}`}
                                         type="text"
-                                        name={`language_${id}`}
+                                        name="languages"
                                         value={data.name}
                                         disabled={!contentEditable}
-                                        onChange={(e) => myChangeHandler(e)}
+                                        onChange={(e) =>
+                                            arrayChangeHandler(id, e.target)
+                                        }
                                     />
                                 );
                             })}
@@ -195,12 +215,14 @@ const Country = (props) => {
                                                 ? ''
                                                 : 'input-hidden-disabled'
                                         }`}
-                                        key={`${id}_${data.name}`}
+                                        key={`callingCodes_${id}`}
                                         type="number"
-                                        name={`callCode_${id}`}
+                                        name="callingCodes"
                                         value={data}
                                         disabled={!contentEditable}
-                                        onChange={(e) => myChangeHandler(e)}
+                                        onChange={(e) =>
+                                            arrayChangeHandler(id, e.target)
+                                        }
                                     />
                                 );
                             })}
